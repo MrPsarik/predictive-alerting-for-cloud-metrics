@@ -7,7 +7,11 @@ This repository contains the solution for predictive alerting problem. The model
 For training and evaluating the model I used "realAWSCloudwatch" dataset from the open-source Numenta Anomaly Benchmark (NAB) for the following reasons:
 - It uses AWS server metrics, which is exactly the topic of the proposed internship project.
 - This dataset contains actual server metrics collected by Amazon CloudWatch, with realistic noise, bursts and drifts.
-- Thus dataset was specifically made for anomaly detection benchmarking and has all anomalies labeled.
+- This dataset was specifically made for anomaly detection benchmarking and has all anomalies labeled.
+
+The "realAWSCloudwatch" store multiple server metrics (CPU utilization, network bytes in, and disk I/O) as a separate CSV files with simple structure: timestamp (string), value (float).
+
+Incident labels are stored in common for all NAB datasets files in ```labels/``` folder. It map each data file to its anomaly timestamps and anomaly windows. ```combined_labels.json``` lists the exact anomaly timestamps for each series, while ```combined_windows.json``` combine those timestamps into start/end windows that define the time intervals during which an anomaly is considered "active".
 
 ## Modeling choices 
 
