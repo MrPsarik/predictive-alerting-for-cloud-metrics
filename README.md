@@ -4,7 +4,11 @@ This repository contains the solution for predictive alerting problem. The model
 
 ## Used dataset
 
-For training and evaluating the model I used "realAWSCloudwatch" dataset from the open-source Numenta Anomaly Benchmark (NAB) for the following reasons:
+For training and evaluating the model I used "realAWSCloudwatch" dataset from the open-source Numenta Anomaly Benchmark (NAB).
+Source: https://github.com/numenta/NAB
+Original NAB license and attribution apply to dataset files copied from that repository.
+
+This dataset was chosen for the following reasons:
 - It uses AWS server metrics, which is exactly the topic of the proposed internship project.
 - This dataset contains actual server metrics collected by Amazon CloudWatch, with realistic noise, bursts and drifts.
 - This dataset was specifically made for anomaly detection benchmarking and has all anomalies labeled.
