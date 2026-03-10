@@ -19,9 +19,25 @@ Incident labels are stored in common for all NAB datasets files in ```labels/```
 
 ## Modeling choices 
 
+### Data preparation
 
+From metrics that the NAB "realAWSCloudwatch" dataset contains, only CPU utilization files from "ec2" was chosen, to keep data homogeneous. 
 
-The history window W and forecast horizon H tradeoff:
+Labels for specific anomalies timestamps was taken from ```combined_labels.json```, because anomaly windows provided in ```combined_windows.json``` primarily serve to reward early-warning in NAB scoring. 
+
+The csv files with ```timestamp (string)```, ```value (float)``` were imported in separate dataframes, while converting timestamps to datetime format for simpler future handling and plotting. Then the anomaly timesteps was taken from ```combined_labels.json``` and ```anomaly_label```: ```True``` was added to all anomalies timestamps in dataframes. 
+
+The following plot shows CPU utilization in time for all 8 csv files used with anomalies marked as red dots.
+ 
+![](/pics/cpu_utilization_plot.png)
+
+From obtained graphs we can see that even the data from similar CPU clusters looks quite different. It also could be seen that irregular peaks in CPU utilization aren't necessary an anomaly, but non-standard spikes are (e.g. CPU utilization 1, 3 and 7). 
+
+### Sliding window approach
+
+We will use a sliding-window to slice our dataset for training the model, where history window W is the number of observations that the model sees to predict if there is the anomaly in the following H observations called forecast horizon.
+
+Dealing with slide window formulation we encounter the history window W and forecast horizon H tradeoff:
 - If W is small, the model sees only very recent behavior, thus, it reacts quickly but becomes sensitive to noise and random spikes 
 - If W is large, the model can capture slower trends and pre-incident signs, but recent changes get overlooked 
 - If H is small, the model doing very near-term prediction
@@ -29,10 +45,14 @@ The history window W and forecast horizon H tradeoff:
 
 For cloud incident prediction, we want enough history to see early incident signs (rising latency, growing variance) and a horizon that gives the system enough time to prevent the incident.
 
+For the beginning W = 30 (150 minutes) and H = 5 (25 minutes) was chosen arbitrary to tune them in future as hyperparameters. 
+
+### Feature engineering  
+
 ## Evaluation setup (including alert thresholds and metrics)
 
 ## Result analysis
 
-### Limitations 
+## Limitations 
 
-### Adaptation a real alerting system 
+## Adaptation a real alerting system 
