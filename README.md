@@ -15,9 +15,11 @@ This dataset was chosen for the following reasons:
 
 The "realAWSCloudwatch" store multiple server metrics (CPU utilization, network bytes in, and disk I/O) as a separate CSV files with simple structure: timestamp (string), value (float).
 
-Incident labels are stored in common for all NAB datasets files in ```labels/``` folder. It map each data file to its anomaly timestamps and anomaly windows. ```combined_labels.json``` lists the exact anomaly timestamps for each series, while ```combined_windows.json``` combine those timestamps into start/end windows that define the time intervals during which an anomaly is considered "active".
+Incident labels are stored in common for all NAB datasets files in ```labels/``` folder. It map each data file to its anomaly timestamps and anomaly windows. ```combined_labels.json``` lists the exact anomaly timestamps for each anomaly, while ```combined_windows.json``` store expanded anomaly windows for purposes of NAB scoring, which rewards early detection.
 
 ## Modeling choices 
+
+
 
 The history window W and forecast horizon H tradeoff:
 - If W is small, the model sees only very recent behavior, thus, it reacts quickly but becomes sensitive to noise and random spikes 
