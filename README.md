@@ -31,7 +31,11 @@ The following plot shows CPU utilization in time for all 8 csv files used with a
  
 ![](/pics/cpu_utilization_plot.png)
 
-From obtained graphs we can see that even the data from similar CPU clusters looks quite different. It also could be seen that irregular peaks in CPU utilization aren't necessary an anomaly, but non-standard spikes are (e.g. CPU utilization 1, 3 and 7). 
+From obtained graphs we can see that even the data from similar CPU clusters looks quite different. It also could be seen that peaks in CPU utilization aren't necessary an anomaly, but non-standard spikes are (e.g. CPU utilization 1, 3 and 7). 
+
+**[TO-DO]** analyze day/night or other cycles  
+
+The number of incidents is very small in comparison with the size of the dataset. There are approximately 1-3 incidents per 4000 normal values. That means that we need to deal with class imbalance in the process of training. 
 
 ### Sliding window approach
 
@@ -47,7 +51,63 @@ For cloud incident prediction, we want enough history to see early incident sign
 
 For the beginning W = 30 (150 minutes) and H = 5 (25 minutes) was chosen arbitrary to tune them in future as hyperparameters. 
 
+### Model choice
+
+RNN:
+LSMT
+
+[Why do tree-based models still outperform deep
+learning on tabular data?](https://arxiv.org/pdf/2207.08815)
+
+Decision trees:
+Random Forest
+XGBoost
+LightGBM
+
 ### Feature engineering  
+
+We will create 5 feature configurations to compare them in evaluation:
+1. Raw data as a baseline for our engineered features (LSMT focused).
+2. Light feature set with raw data included (LSMT focused).
+3. Full feature set with some raw data (Decision trees focused).
+4. All features without raw data (Decision trees focused).
+5. Subset of statistical features (Decision trees focused). 
+
+This paper showed that extracting statistical features from time series data could work well with decision trees like XGBoost. Despite the fact that the paper focused on on solving challenges with irregular data and missing observation, its results shows that we can achieve high accuracy with a feature set containing just several statistical valuables.
+[A Statistical Approach for Modeling Irregular Multivariate Time Series with Missing Observations](https://arxiv.org/html/2602.19531v1)
+
+We use statistical features from this paper: 
+1. Mean of observed values.
+2. Standard Deviation of Observed Values.
+3. Mean Change In Values.
+4. Standard Deviation of Change In Values.
+
+Additional statistical features:
+1. Minimum of observed values.
+2. Maximum of observed values.
+3. Rolling mean with window size of 5. 
+
+Engineered features:
+1. Linear trend slope fitted over observed values.
+2. Hour-of-day encoded as $sin(2\pi h/24)$ and $cos(2\pi h/24)$.
+3. Difference between the last value and the mean of observed values, to capture rapid changes.
+
+From these features we form our feature configurations.
+
+#### 1. Raw data (baseline)
+1. raw W values
+
+#### 2. Balanced light feature set
+
+#### 3. Full feature set
+
+#### 4. Only features set 
+
+#### 5. Statistical features from the paper
+1. Mean of observed values.
+2. Standard Deviation of Observed Values.
+3. Mean Change In Values.
+4. Standard Deviation of Change In Values.
 
 ## Evaluation setup (including alert thresholds and metrics)
 
