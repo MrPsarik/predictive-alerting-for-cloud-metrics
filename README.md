@@ -53,28 +53,36 @@ For the beginning W = 30 (150 minutes) and H = 5 (25 minutes) was chosen arbitra
 
 ### Model choice
 
-RNN:
-LSMT
+For our dataset we can use standard deep leaning models for time-series anomaly detection.
 
-[Why do tree-based models still outperform deep
+Deep learning:
+- LSMT
+- GRU
+- 1D CNN/TCN
+- small Transformer (modern approach comparison)
+
+But deep learning works better for large datasets, while out dataset contains only 8x4000=32000 discrete observations. We can transform time series data into tabular data and use decision trees, which works better with small amount of training data, but require more detailed feature engineering.
+
+[Research paper: Why do tree-based models still outperform deep
 learning on tabular data?](https://arxiv.org/pdf/2207.08815)
 
 Decision trees:
-Random Forest
-XGBoost
-LightGBM
+- Random Forest (baseline)
+- XGBoost
+- LightGBM
 
 ### Feature engineering  
 
 We will create 5 feature configurations to compare them in evaluation:
-1. Raw data as a baseline for our engineered features (LSMT focused).
-2. Light feature set with raw data included (LSMT focused).
-3. Full feature set with some raw data (Decision trees focused).
-4. All features without raw data (Decision trees focused).
-5. Subset of statistical features (Decision trees focused). 
+1. Raw data as a baseline for our engineered features (DL).
+2. Raw data with light feature set (DL).
+3. Full feature set with some raw data (Trees).
+4. All features without raw data (Trees).
+5. Subset of statistical features (Trees). 
 
 This paper showed that extracting statistical features from time series data could work well with decision trees like XGBoost. Despite the fact that the paper focused on on solving challenges with irregular data and missing observation, its results shows that we can achieve high accuracy with a feature set containing just several statistical valuables.
-[A Statistical Approach for Modeling Irregular Multivariate Time Series with Missing Observations](https://arxiv.org/html/2602.19531v1)
+
+[Research paper: A Statistical Approach for Modeling Irregular Multivariate Time Series with Missing Observations](https://arxiv.org/html/2602.19531v1)
 
 We use statistical features from this paper: 
 1. Mean of observed values.
@@ -85,7 +93,7 @@ We use statistical features from this paper:
 Additional statistical features:
 1. Minimum of observed values.
 2. Maximum of observed values.
-3. Rolling mean with window size of 5. 
+3. Rolling mean.
 
 Engineered features:
 1. Linear trend slope fitted over observed values.
@@ -95,13 +103,41 @@ Engineered features:
 From these features we form our feature configurations.
 
 #### 1. Raw data (baseline)
-1. raw W values
+1. Raw W values.
 
 #### 2. Balanced light feature set
+1. Raw W values.
+2. Rolling mean over 5 values.
+3. Raw value minus the rolling mean of 5.
+4. Hour $sin$.
+5. Hour $cos$.
 
 #### 3. Full feature set
+1. Raw 10 values. 
+2. Rolling mean over 5 values.
+3. Last value minus the mean of observed values.
+4. Hour $sin$.
+5. Hour $cos$.
+6. Mean of observed values.
+7. Standard Deviation of Observed Values.
+8. Mean Change In Values.
+9. Standard Deviation of Change In Values.
+10. Minimum of observed values.
+11. Maximum of observed values.
+12. Linear trend slope.
 
 #### 4. Only features set 
+1. Rolling mean over last 5 values.
+2. Last value minus the mean of observed values.
+3. Hour $sin$.
+4. Hour $cos$.
+5. Mean of observed values.
+6. Standard Deviation of Observed Values.
+7. Mean Change In Values.
+8. Standard Deviation of Change In Values.
+9. Minimum of observed values.
+10. Maximum of observed values.
+11. Linear trend slope.
 
 #### 5. Statistical features from the paper
 1. Mean of observed values.
